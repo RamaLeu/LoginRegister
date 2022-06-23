@@ -1,4 +1,5 @@
 const express = require("express");
+const { protect } = require('../controllers/authController');
 
 
 const {
@@ -7,7 +8,7 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(getAllUsers);
+router.route("/").get(protect, getAllUsers);
 router.route("/signup").post(registerUser);
 router.route("/login").post(loginUser);
 

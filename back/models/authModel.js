@@ -47,6 +47,13 @@ authSchema.pre('save', async function (next) {
     next();
 })
 
+authSchema.methods.correctPassword = async function ( // funkcija, kuri gauna
+    candidatePassword, // logino psw (vedamą laukelyje kai loginimasi)
+    userPassword // tikrasis psw (uzregistruotas), bet jis uzkriptuotas
+) { // ir su bcrypt palyginame naudodami correctPassword authControll'eryje
+    return await bcrypt.compare(candidatePassword, userPassword); 
+};
+
 const AuthModel = new mongoose.model("users", authSchema);
 
 module.exports = AuthModel;

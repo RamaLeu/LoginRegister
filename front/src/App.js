@@ -29,7 +29,9 @@ function App() {
     };
     fetch('http://localhost:3001/api/v1/auth/signup', requestOptions)
       .then(response => response.json())
-      .then(data => console.log(data));
+      .then(data => {
+        localStorage.setItem('Token', data.token);
+      });
   }
 
 
@@ -47,23 +49,37 @@ function App() {
     fetch('http://localhost:3001/api/v1/auth/login', requestOptions)
       .then(response => response.json())
       .then(data => {
-        console.log(data);
-        setCurrentUser(data.user)
+        localStorage.getItem('Token');
+        setCurrentUser(data.data.user)
         setRender(prevState => !prevState)
       });
   }
 
-  useEffect(() => {
-    const requestOptions = {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    };
-    fetch('http://localhost:3001/api/v1/auth', requestOptions)
-      .then(response => response.json())
-      .then(result => {
-        getUsers(result.data.user)
-      });
-  }, [render])
+  function clearUser() {
+    setCurrentUser('')
+    localStorage.clear();
+  }
+
+
+  // useEffect(() => {
+    // if (localStorage.user === undefined) {
+    //  No access
+    // } else { } 
+  //   const requestOptions = {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       "Authorization": `Bearer ${'22simboli'}`
+  //     }
+  //   };
+  //   fetch('http://localhost:3001/api/v1/auth', requestOptions)
+  //     .then(response => response.json())
+  //     .then(result => {
+  //       getUsers(result.data.user)
+  //       localStorage.clear();
+  //     });
+
+  // }, [render])
 
 
   return (
@@ -84,6 +100,8 @@ function App() {
         <input type="submit" value="login"></input>
       </form>
 
+      <button onClick={(e) => clearUser(e)}>Log out</button>
+
 
       {!currentUser ? <h6>User not logged in</h6> : <h3>Hello, {currentUser.username}</h3>}
 
@@ -95,7 +113,8 @@ function App() {
           <li>{data.email === undefined ? 'No email' : data.email}</li>
           <li>{data.type}</li>
         </ul>
-      )}
+      )
+      }
     </div>
   );
 }
