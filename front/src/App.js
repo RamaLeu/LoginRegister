@@ -90,8 +90,9 @@ function App() {
       {users.map((data) =>
         <ul key={data._id}>
           <li>{data._id}</li>
+          <br />
           <li>{data.username}</li>
-          <li>{data.gmail}</li>
+          <li>{data.email === undefined ? 'No email' : data.email}</li>
           <li>{data.type}</li>
         </ul>
       )}
