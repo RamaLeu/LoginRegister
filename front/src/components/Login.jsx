@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 // import { Link, Navigate } from "react-router-dom";
 
-function Login({ setCurrentUser }) {
+function Login({ setCurrentUser, setCurrentUserToken }) {
 
   let [loginUsername, setLoginUsername] = useState("");
   let [loginPassword, setLoginPassword] = useState("");
@@ -22,7 +22,11 @@ function Login({ setCurrentUser }) {
       .then(response => response.json())
       .then(data => {
         setCurrentUser(data.data.user);
-        localStorage.setItem("Token", data.token)
+        setCurrentUserToken(data.token);
+        if(rememberMe){
+          localStorage.setItem("Token", data.token);
+          localStorage.setItem("User", [data.data.user.username]);
+        }
         // if (rememberMe) {
         //   localStorage.getItem("Token")
         // }

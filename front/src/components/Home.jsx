@@ -6,16 +6,16 @@ import ItemCard from './ItemCard';
 function Home() {
     const [users, getUsers] = useState([]);
     let [currentUser, setCurrentUser] = useState("");
-
+    let [currentUserToken, setCurrentUserToken] = useState(localStorage.Token);
     let [cartCount, setCartItemsCount] = useState(0);
     const [itemArray, setItemArray] = useState([]);
     const [seeItems, setSeeItems] = useState(false);
     const [cart, setCart] = useState(localStorage.getItem('cart'));
 
     const addToCart = (data) => {
-        let tempArr = [...itemArray]
-        tempArr.push(data)
-        setItemArray([...itemArray, tempArr]);
+        let tempArr = [...itemArray];
+        tempArr.push(data);
+        setItemArray(tempArr);
         // let tempArr = [...itemArray]
         // // tempArr.push(data)
         // console.log(itemArray)
@@ -25,37 +25,38 @@ function Home() {
     };
 
     function clearUser() {
-        setCurrentUser('')
-        localStorage.removeItem('Token');
-        localStorage.removeItem('cart');
+        setCurrentUser('');
+        setCurrentUserToken('');
+        if(localStorage.getItem('Token')){
+            localStorage.removeItem('Token');
+            localStorage.removeItem('cart');
+        }
     }
 
     useEffect(() => {
-        if (localStorage.Token === undefined) {
-            <></>
-        } else {
+        if (currentUserToken) {
             const requestOptions = {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('Token')}`
+                    'Authorization': `Bearer ${currentUserToken}`
                 }
             };
             fetch('http://localhost:3001/api/v1/auth', requestOptions)
                 .then(response => response.json())
                 .then(res => {
-                    getUsers(res.data.user)
+                    getUsers(res.data.user);
                 });
         }
-    }, [])
+    }, [currentUserToken, setCurrentUserToken]);
 
     return (
         <div>
             <SignUp />
             {/* <Link to="/login" setRender={setRender} setCurrentUser={setCurrentUser}>Login</Link> */}
-            <Login setCurrentUser={setCurrentUser} />
+            <Login setCurrentUser={setCurrentUser} setCurrentUserToken={setCurrentUserToken} />
 
-            {!currentUser ? (
+            {!currentUserToken ? (
                 <p>You have no access</p>
             ) :
                 <>
