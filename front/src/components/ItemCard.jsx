@@ -1,10 +1,19 @@
 import React from 'react'
 
-function ItemCard({ }) {
+function ItemCard({ data }) {
+    // console.log(data)
     return (
         <div>
-            sgre
-        </div>
+{/* 
+            {data.map((data) =>
+                <ul key={data._id}>
+                    <li>{data._id}</li>
+                    <li>{data.username}</li>
+                    <li>{data.email}</li>
+                    <li>{data.type}</li>
+                </ul>
+            )} */}
+        </div >
     )
 }
 

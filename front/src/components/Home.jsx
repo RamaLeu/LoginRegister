@@ -6,18 +6,28 @@ import ItemCard from './ItemCard';
 function Home() {
     const [users, getUsers] = useState([]);
     let [currentUser, setCurrentUser] = useState("");
-    let [cartCount, setCartItemsCount] = useState(0);
-    let [itemArray, setItemArray] = useState([]);
-    const [seeItems, setSeeItems] = useState(false);
 
-    const saveToCart = (data) => {
-        setItemArray(data)
-        console.log(itemArray)
-        setCartItemsCount(cartCount + 1)
-    }
+    let [cartCount, setCartItemsCount] = useState(0);
+    const [itemArray, setItemArray] = useState([]);
+    const [seeItems, setSeeItems] = useState(false);
+    const [cart, setCart] = useState(localStorage.getItem('cart'));
+
+    const addToCart = (data) => {
+        let tempArr = [...itemArray]
+        tempArr.push(data)
+        setItemArray([...itemArray, tempArr]);
+        // let tempArr = [...itemArray]
+        // // tempArr.push(data)
+        // console.log(itemArray)
+        // setItemArray([...itemArray, item])
+        localStorage.setItem("cart", JSON.stringify(tempArr));
+        // setCartItemsCount(cartCount + 1)
+    };
+
     function clearUser() {
         setCurrentUser('')
         localStorage.removeItem('Token');
+        localStorage.removeItem('cart');
     }
 
     useEffect(() => {
@@ -49,12 +59,9 @@ function Home() {
                 <p>You have no access</p>
             ) :
                 <>
-                    <button onClick={setSeeItems}>/'Tipo cart img cia'/<div>{cartCount}</div></button>
-                    {seeItems &&
-                        <ItemCard />
-                    }
+                    /'Tipo cart img cia'/<div>{cartCount}</div>
+                    <ItemCard data={itemArray} />
                     <h3>Hello, {currentUser.username}</h3>
-                    <h4>Your current token is: <br />{localStorage.getItem('Token')}</h4>
                     <button onClick={(e) => clearUser(e)}>Log out</button>
                     <br />
                     <div>
@@ -64,7 +71,7 @@ function Home() {
                                 <li>{data.username}</li>
                                 <li>{data.email === undefined ? 'No email' : data.email}</li>
                                 <li>{data.type}</li>
-                                <button onClick={() => saveToCart(data)}>+ Add me to list</button>
+                                <button onClick={() => addToCart(data)}>+ Add me to list</button>
                                 <hr />
                             </ul>
                         )}
