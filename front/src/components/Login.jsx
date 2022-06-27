@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 // import { Link, Navigate } from "react-router-dom";
 
-function Login({ setCurrentUser, setCurrentUserToken }) {
-
+function Login({ setCurrentUser, setCurrentUserToken, itemArray }) {
   let [loginUsername, setLoginUsername] = useState("");
   let [loginPassword, setLoginPassword] = useState("");
   let [rememberMe, setRememberMe] = useState(false)
@@ -23,13 +22,11 @@ function Login({ setCurrentUser, setCurrentUserToken }) {
       .then(data => {
         setCurrentUser(data.data.user);
         setCurrentUserToken(data.token);
-        if(rememberMe){
+        if (rememberMe) {
           localStorage.setItem("Token", data.token);
           localStorage.setItem("User", [data.data.user.username]);
+          localStorage.setItem("cart", JSON.stringify(itemArray));
         }
-        // if (rememberMe) {
-        //   localStorage.getItem("Token")
-        // }
         // setTimeout(function () {
         //   <Navigate to="/" replace={true} />
         // });

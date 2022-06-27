@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Login from './Login';
 import SignUp from './SignUp';
 import ItemCard from './ItemCard';
+import Search from './Search';
+import UserList from './UserList';
 
 function Home() {
     const [users, getUsers] = useState([]);
@@ -16,20 +18,17 @@ function Home() {
         let tempArr = [...itemArray];
         tempArr.push(data);
         setItemArray(tempArr);
-        // let tempArr = [...itemArray]
-        // // tempArr.push(data)
-        // console.log(itemArray)
-        // setItemArray([...itemArray, item])
         localStorage.setItem("cart", JSON.stringify(tempArr));
-        // setCartItemsCount(cartCount + 1)
+        setCartItemsCount(cartCount + 1)
     };
 
     function clearUser() {
         setCurrentUser('');
         setCurrentUserToken('');
-        if(localStorage.getItem('Token')){
+        if (localStorage.getItem('Token')) {
             localStorage.removeItem('Token');
             localStorage.removeItem('cart');
+            localStorage.removeItem('User');
         }
     }
 
@@ -50,31 +49,37 @@ function Home() {
         }
     }, [currentUserToken, setCurrentUserToken]);
 
+    useEffect(() => {
+        const items = JSON.parse(localStorage.getItem('cart'));
+        if (items) {
+            setItemArray(items);
+        }
+    }, []);
+
     return (
         <div>
             <SignUp />
             {/* <Link to="/login" setRender={setRender} setCurrentUser={setCurrentUser}>Login</Link> */}
-            <Login setCurrentUser={setCurrentUser} setCurrentUserToken={setCurrentUserToken} />
+            <Login setCurrentUser={setCurrentUser} setCurrentUserToken={setCurrentUserToken} itemArray={itemArray} />
 
             {!currentUserToken ? (
                 <p>You have no access</p>
             ) :
                 <>
-                    /'Tipo cart img cia'/<div>{cartCount}</div>
-                    <ItemCard data={itemArray} />
-                    <h3>Hello, {currentUser.username}</h3>
+                    <div>{cartCount}</div>
+
+                    <ItemCard data={itemArray} setCurrentUserToken={setCurrentUserToken} />
+
+                    <h3 >Hello, {currentUser.username}</h3>
                     <button onClick={(e) => clearUser(e)}>Log out</button>
                     <br />
+                    <Search details={users} />
                     <div>
                         {users.map((data) =>
-                            <ul key={data._id}>
-                                <li>{data._id}</li>
-                                <li>{data.username}</li>
-                                <li>{data.email === undefined ? 'No email' : data.email}</li>
-                                <li>{data.type}</li>
-                                <button onClick={() => addToCart(data)}>+ Add me to list</button>
-                                <hr />
-                            </ul>
+                            <UserList
+                                users={data}
+                                addToCart={addToCart}
+                            />
                         )}
                     </div>
                 </>
